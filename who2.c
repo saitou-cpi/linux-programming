@@ -15,9 +15,8 @@ void show_info(struct utmp *utbufp);
 
 int main()
 {
-    struct utmp current_record;
+    struct utmp utbuf;
     int utmpfd;
-    ssize_t reclen = sizeof(current_record);
 
     if ((utmpfd = open(UTMP_FILE, O_RDONLY)) == -1) {
         perror(UTMP_FILE);
@@ -45,7 +44,7 @@ void show_info(struct utmp *utbufp)
     printf(" ");
     printf("%-8.8s", utbufp->ut_line);
     printf(" ");
-    printf("%10ld", utbufp->ut_time);
+    showtime( utbufp->ut_time );
 #ifdef SHOWHOST
     if ( utbufp->ut_host[0] != '\0' )
         printf("(%s)", utbufp->ut_host);
@@ -57,6 +56,15 @@ void showtime( long timeval )
 /*
 * 人間が理解しやすい形式で時刻を表示する。
 * ctimeを使って文字列を組み立ててから、その一部を抜き出す
-*
-*
+* 注意: %12.12sは文字列をchar12字分で出力し、
+* 長さを12バイト以下に制限する。
 */
+{
+    char *cp;
+
+    cp = ctime(&timeval);         /* 時刻を文字列に変換する */
+                                  /* 文字列は次の通り */
+                                  /* Mon Feb 4 00:46:40 EST 1991 */
+                                  /* 0123456789012345. */
+    printf("%12.12s", cp+4 );     /* 位置4から12字分を抜き出す */
+}
