@@ -57,7 +57,14 @@ export ENS_FULLSCAN_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"
 }'"
 
 # ENS Update Status Command
-export ENS_UPDATE_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"${ENS_UPDATE_TASK_NAME}\" | awk '{print \$10}'"
+export ENS_UPDATE_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"${ENS_UPDATE_TASK_NAME}\" \
+| awk '{                                   \
+    if ( \$(NF-2) == \"Not\" && \$(NF-1) == \"Started\" ) {              \
+        print \$(NF-2) \" \" \$(NF-1);                                   \
+    } else {                                                            \
+        print \$10;                                                      \
+    }                                                                  \
+}'"
 
 #----------------------------------------------------------
 # Script Processing related
