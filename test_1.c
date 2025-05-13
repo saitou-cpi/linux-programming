@@ -18,7 +18,6 @@
 #----------------------------------------------------------
 # ENS Command Directory
 export ENS_SCRIPT_DIR="/opt/McAfee/ens/tp/bin"
-ENS_CLI="${ENS_SCRIPT_DIR}/mfetpcli"
 
 # ENS Fullscan Task Name
 export ENS_FULLSCAN_TASK_NAME="Full Scan"
@@ -27,29 +26,31 @@ export ENS_FULLSCAN_TASK_NAME="Full Scan"
 export ENS_UPDATE_TASK_NAME="Default Client Update task"
 
 # ENS Fullscan Index No. Get Command
-export ENS_FULLSCAN_INDEX_NO_CMD="$ENS_CLI --listtasks | \
-  grep \"$ENS_FULLSCAN_TASK_NAME\" | awk 'NR==1{sub(/^[[:space:]]*\\[/,\"\"); sub(/].*/,\"\"); print \$1}'"
+export ENS_FULLSCAN_INDEX_NO_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"${ENS_FULLSCAN_TASK_NAME}\" | awk '{print \$1}' | cut -c 2-"
 
 # ENS Update Index No. Get Command
-export ENS_UPDATE_INDEX_NO_CMD="$ENS_CLI --listtasks | \
-  grep \"$ENS_UPDATE_TASK_NAME\" | awk 'NR==1{sub(/^[[:space:]]*\\[/,\"\"); sub(/].*/,\"\"); print \$1}'"
+export ENS_UPDATE_INDEX_NO_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"${ENS_UPDATE_TASK_NAME}\" | awk '{print \$1}' | cut -c 2-"
+
+# # ENS Fullscan Index No.
+export ENS_FULLSCAN_INDEX_NO=$(eval ${ENS_FULLSCAN_INDEX_NO_CMD})
+
+# # ENS Update Index No.
+export ENS_UPDATE_INDEX_NO=$(eval ${ENS_UPDATE_INDEX_NO_CMD})
 
 # ENS Fullscan Command
-export ENS_FULLSCAN_CMD="${ENS_CLI} --runtask --index ${ENS_FULLSCAN_INDEX_NO}"
+export ENS_FULLSCAN_CMD="${ENS_SCRIPT_DIR}/mfetpcli --runtask --index ${ENS_FULLSCAN_INDEX_NO}"
 
 # ENS Fullscan Cancel Command
-export ENS_FULLSCAN_CANCEL_CMD="${ENS_CLI} --stoptask --index ${ENS_FULLSCAN_INDEX_NO}"
+export ENS_FULLSCAN_CANCEL_CMD="${ENS_SCRIPT_DIR}/mfetpcli --stoptask --index ${ENS_FULLSCAN_INDEX_NO}"
 
 # ENS Update Command
-export ENS_UPDATE_CMD="${ENS_CLI} --runtask --index ${ENS_UPDATE_INDEX_NO}"
+export ENS_UPDATE_CMD="${ENS_SCRIPT_DIR}/mfetpcli --runtask --index ${ENS_UPDATE_INDEX_NO}"
 
 # ENS Fullscan Status Command
-export ENS_FULLSCAN_STATUS_CMD="$ENS_CLI --listtasks | \
-  grep \"$ENS_FULLSCAN_TASK_NAME\" | awk 'NR==1{print \$(NF-1)}'"
+export ENS_FULLSCAN_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"$ENS_FULLSCAN_TASK_NAME\" | awk 'NR==1{print \$5}'"
 
 # ENS Update Status Command
-export ENS_UPDATE_STATUS_CMD="$ENS_CLI --listtasks | \
-  grep \"$ENS_UPDATE_TASK_NAME\" | awk 'NR==1{print \$(NF-1)}'"
+export ENS_UPDATE_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"$ENS_UPDATE_TASK_NAME\" | awk 'NR==1{print \$10}'"
 
 #----------------------------------------------------------
 # Script Processing related
