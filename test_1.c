@@ -46,27 +46,11 @@ export ENS_FULLSCAN_CANCEL_CMD="${ENS_SCRIPT_DIR}/mfetpcli --stoptask --index ${
 # ENS Update Command
 export ENS_UPDATE_CMD="${ENS_SCRIPT_DIR}/mfetpcli --runtask --index ${ENS_UPDATE_INDEX_NO}"
 
-_get_status_cmd () {
-  task="$1"
-  echo "$ENS_CLI --listtasks | awk '
-    BEGIN{IGNORECASE=1}
-    tolower(\$0)~tolower(\"'"$task"'\")
-    {
-      nf=NF-1
-      if (\$nf ~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) nf--
-      if (\$(nf-1)==\"Not\")
-        print \$(nf-1) \" \" \$nf;
-      else
-        print \$nf;
-      exit
-    }'"
-}
-
 # ENS Fullscan Status Command
-export ENS_FULLSCAN_STATUS_CMD="$(_get_status_cmd "$ENS_FULLSCAN_TASK_NAME")"
+export ENS_FULLSCAN_STATUS_CMD="${ENS_CLI} --listtasks | grep -F -m1 \"${ENS_FULLSCAN_TASK_NAME}\" | awk '{print \$(NF-1)}'"
 
 # ENS Update Status Command
-export ENS_UPDATE_STATUS_CMD="$(_get_status_cmd "$ENS_UPDATE_TASK_NAME")"
+export ENS_UPDATE_STATUS_CMD="${ENS_CLI} --listtasks | grep -F -m1 \"${ENS_UPDATE_TASK_NAME}\" | awk '{print \$(NF-1)}'"
 
 #----------------------------------------------------------
 # Script Processing related
