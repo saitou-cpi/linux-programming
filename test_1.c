@@ -48,29 +48,34 @@ export ENS_UPDATE_CMD="${ENS_SCRIPT_DIR}/mfetpcli --runtask --index ${ENS_UPDATE
 
 # ENS Fullscan Status Command
 export ENS_FULLSCAN_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | \
-  grep -i \"${ENS_FULLSCAN_TASK_NAME}\" | \
-  awk '{                                                    \
-        for (i = 1; i <= NF; i++) {                         \
-          if      (toupper(\$i) == \"NOT\"  && toupper($(i+1)) == \"STARTED\") { \
-               print \$i \" \" $(i+1); exit                 \
-          } else if (toupper(\$i) ~ /^(COMPLETED|RUNNING|STOPPED)$/) { \
-               print \$i; exit                              \
-          }                                                 \
-        }                                                   \
-      }'"
+  grep \"${ENS_FULLSCAN_TASK_NAME}\" | \
+  awk '{
+         for (i = 1; i <= NF; i++) {
+             # TaskType 列に当たったら、その右隣がステータス
+             if ($i == \"ODS\" || $i == \"Update\") {
+                 if ($(i+1) == \"Not\" && $(i+2) == \"Started\")
+                     print $(i+1) \" \" $(i+2);      # 2 語
+                 else
+                     print $(i+1);                   # 1 語
+                 exit
+             }
+         }
+       }'"
 
 # ENS Update Status Command
 export ENS_UPDATE_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | \
-  grep -i \"${ENS_UPDATE_TASK_NAME}\" | \
-  awk '{                                                    \
-        for (i = 1; i <= NF; i++) {                         \
-          if      (toupper(\$i) == \"NOT\"  && toupper($(i+1)) == \"STARTED\") { \
-               print \$i \" \" $(i+1); exit                 \
-          } else if (toupper(\$i) ~ /^(COMPLETED|RUNNING|STOPPED)$/) { \
-               print \$i; exit                              \
-          }                                                 \
-        }                                                   \
-      }'"
+  grep \"${ENS_UPDATE_TASK_NAME}\" | \
+  awk '{
+         for (i = 1; i <= NF; i++) {
+             if ($i == \"ODS\" || $i == \"Update\") {
+                 if ($(i+1) == \"Not\" && $(i+2) == \"Started\")
+                     print $(i+1) \" \" $(i+2);
+                 else
+                     print $(i+1);
+                 exit
+             }
+         }
+       }'"
 
 #----------------------------------------------------------
 # Script Processing related
