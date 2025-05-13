@@ -18,6 +18,7 @@
 #----------------------------------------------------------
 # ENS Command Directory
 export ENS_SCRIPT_DIR="/opt/McAfee/ens/tp/bin"
+ENS_CLI="${ENS_SCRIPT_DIR}/mfetpcli"
 
 # ENS Fullscan Task Name
 export ENS_FULLSCAN_TASK_NAME="Full Scan"
