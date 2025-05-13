@@ -47,24 +47,30 @@ export ENS_FULLSCAN_CANCEL_CMD="${ENS_SCRIPT_DIR}/mfetpcli --stoptask --index ${
 export ENS_UPDATE_CMD="${ENS_SCRIPT_DIR}/mfetpcli --runtask --index ${ENS_UPDATE_INDEX_NO}"
 
 # ENS Fullscan Status Command
-export ENS_FULLSCAN_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"${ENS_FULLSCAN_TASK_NAME}\" \
-| awk '{                                   \
-    if ( \$(NF-2) == \"Not\" && \$(NF-1) == \"Started\" ) {              \
-        print \$(NF-2) \" \" \$(NF-1);                                   \
-    } else {                                                            \
-        print \$5;                                                      \
-    }                                                                  \
-}'"
+export ENS_FULLSCAN_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | \
+  grep -i \"${ENS_FULLSCAN_TASK_NAME}\" | \
+  awk '{                                                    \
+        for (i = 1; i <= NF; i++) {                         \
+          if      (toupper(\$i) == \"NOT\"  && toupper($(i+1)) == \"STARTED\") { \
+               print \$i \" \" $(i+1); exit                 \
+          } else if (toupper(\$i) ~ /^(COMPLETED|RUNNING|STOPPED)$/) { \
+               print \$i; exit                              \
+          }                                                 \
+        }                                                   \
+      }'"
 
 # ENS Update Status Command
-export ENS_UPDATE_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"${ENS_UPDATE_TASK_NAME}\" \
-| awk '{                                   \
-    if ( \$(NF-2) == \"Not\" && \$(NF-1) == \"Started\" ) {              \
-        print \$(NF-2) \" \" \$(NF-1);                                   \
-    } else {                                                            \
-        print \$10;                                                      \
-    }                                                                  \
-}'"
+export ENS_UPDATE_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | \
+  grep -i \"${ENS_UPDATE_TASK_NAME}\" | \
+  awk '{                                                    \
+        for (i = 1; i <= NF; i++) {                         \
+          if      (toupper(\$i) == \"NOT\"  && toupper($(i+1)) == \"STARTED\") { \
+               print \$i \" \" $(i+1); exit                 \
+          } else if (toupper(\$i) ~ /^(COMPLETED|RUNNING|STOPPED)$/) { \
+               print \$i; exit                              \
+          }                                                 \
+        }                                                   \
+      }'"
 
 #----------------------------------------------------------
 # Script Processing related
