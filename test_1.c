@@ -28,12 +28,11 @@ export ENS_UPDATE_TASK_NAME="Default Client Update task"
 
 # Get index
 _get_index () {
-  $ENS_CLI --listtasks \
-  | awk -v task="$1" '
-      $0 ~ task {
-        gsub(/^\[|\].*/,"",$1);
-        print $1; exit
-      }'
+  task="$1"
+  $ENS_CLI --listtasks           \
+  | grep "$task"                 \
+  | head -1                      \
+  | sed 's/^[[:space:]]*\[\([0-9][0-9]*\)].*/\1/'
 }
 
 # ENS Fullscan Index No. Get Command
@@ -53,7 +52,8 @@ export ENS_UPDATE_CMD="${ENS_CLI} --runtask --index ${ENS_UPDATE_INDEX_NO}"
 
 # Get Status
 _get_status_cmd () {
-  echo "${ENS_CLI} --listtasks | awk -v task=\"$1\" '\$0 ~ task {print \$(NF-1); exit}'"
+  task="$1"
+  echo "${ENS_CLI} --listtasks | grep \"${task}\" | head -1 | awk '{print \$(NF-1)}'"
 }
 
 # ENS Fullscan Status Command
