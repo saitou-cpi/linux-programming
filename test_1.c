@@ -26,23 +26,20 @@ export ENS_FULLSCAN_TASK_NAME="Full Scan"
 # ENS Update Task Name
 export ENS_UPDATE_TASK_NAME="Default Client Update task"
 
+# Get index
+_get_index () {
+  local task_name="$1"
+  $ENS_CLI --listtasks           \
+  | grep "$task_name"            \
+  | head -1                      \
+  | sed 's/^[[:space:]]*\[\([0-9][0-9]*\)].*/\1/'
+}
+
 # ENS Fullscan Index No. Get Command
-export ENS_FULLSCAN_INDEX_NO=$(
-  $ENS_CLI --listtasks | grep "${ENS_FULLSCAN_TASK_NAME}" \
-  | head -n 1 | sed -n 's/^[[:space:]]*\[\([0-9]\+\)].*/\1/p'
-)
+export ENS_FULLSCAN_INDEX_NO=$(_get_index "$ENS_FULLSCAN_TASK_NAME")
 
 # ENS Update Index No. Get Command
-export ENS_UPDATE_INDEX_NO=$(
-  $ENS_CLI --listtasks | grep "${ENS_UPDATE_TASK_NAME}" \
-  | head -n 1 | sed -n 's/^[[:space:]]*\[\([0-9]\+\)].*/\1/p'
-)
-
-# # ENS Fullscan Index No.
-export ENS_FULLSCAN_INDEX_NO=$(eval ${ENS_FULLSCAN_INDEX_NO_CMD})
-
-# # ENS Update Index No.
-export ENS_UPDATE_INDEX_NO=$(eval ${ENS_UPDATE_INDEX_NO_CMD})
+export ENS_UPDATE_INDEX_NO=$(_get_index "$ENS_UPDATE_TASK_NAME")
 
 # ENS Fullscan Command
 export ENS_FULLSCAN_CMD="${ENS_CLI} --runtask --index ${ENS_FULLSCAN_INDEX_NO}"
@@ -53,11 +50,17 @@ export ENS_FULLSCAN_CANCEL_CMD="${ENS_CLI} --stoptask --index ${ENS_FULLSCAN_IND
 # ENS Update Command
 export ENS_UPDATE_CMD="${ENS_CLI} --runtask --index ${ENS_UPDATE_INDEX_NO}"
 
+# Get Status
+_get_status_cmd () {
+  local task_name="$1"
+  echo "${ENS_CLI} --listtasks | grep \"${task_name}\" | head -1 | awk '{print \$(NF-1)}'"
+}
+
 # ENS Fullscan Status Command
-export ENS_FULLSCAN_STATUS_CMD="$ENS_CLI --listtasks | grep \"${ENS_FULLSCAN_TASK_NAME}\" | head -n 1 | awk '{print \$(NF-1)}'"
+export ENS_FULLSCAN_STATUS_CMD="$(_get_status_cmd "$ENS_FULLSCAN_TASK_NAME")"
 
 # ENS Update Status Command
-export ENS_UPDATE_STATUS_CMD="$ENS_CLI --listtasks | grep \"${ENS_UPDATE_TASK_NAME}\" | head -n 1 | awk '{print \$(NF-1)}'"
+export ENS_UPDATE_STATUS_CMD="$(_get_status_cmd "$ENS_UPDATE_TASK_NAME")"
 
 #----------------------------------------------------------
 # Script Processing related
