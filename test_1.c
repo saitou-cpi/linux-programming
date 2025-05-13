@@ -47,35 +47,10 @@ export ENS_FULLSCAN_CANCEL_CMD="${ENS_SCRIPT_DIR}/mfetpcli --stoptask --index ${
 export ENS_UPDATE_CMD="${ENS_SCRIPT_DIR}/mfetpcli --runtask --index ${ENS_UPDATE_INDEX_NO}"
 
 # ENS Fullscan Status Command
-export ENS_FULLSCAN_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | \
-  grep \"${ENS_FULLSCAN_TASK_NAME}\" | \
-  awk '{
-         for (i = 1; i <= NF; i++) {
-             # TaskType 列に当たったら、その右隣がステータス
-             if ($i == \"ODS\" || $i == \"Update\") {
-                 if ($(i+1) == \"Not\" && $(i+2) == \"Started\")
-                     print $(i+1) \" \" $(i+2);      # 2 語
-                 else
-                     print $(i+1);                   # 1 語
-                 exit
-             }
-         }
-       }'"
+export ENS_FULLSCAN_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"${ENS_FULLSCAN_TASK_NAME}\" | grep -Eo 'Not Started|Initiated|Completed|Aborted|Running|Stopping|Stopped'"
 
 # ENS Update Status Command
-export ENS_UPDATE_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | \
-  grep \"${ENS_UPDATE_TASK_NAME}\" | \
-  awk '{
-         for (i = 1; i <= NF; i++) {
-             if ($i == \"ODS\" || $i == \"Update\") {
-                 if ($(i+1) == \"Not\" && $(i+2) == \"Started\")
-                     print $(i+1) \" \" $(i+2);
-                 else
-                     print $(i+1);
-                 exit
-             }
-         }
-       }'"
+export ENS_UPDATE_STATUS_CMD="${ENS_SCRIPT_DIR}/mfetpcli --listtasks | grep \"${ENS_UPDATE_TASK_NAME}\" | grep -Eo 'Not Started|Initiated|Completed|Aborted|Running'"
 
 #----------------------------------------------------------
 # Script Processing related
