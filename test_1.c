@@ -26,42 +26,32 @@ export ENS_FULLSCAN_TASK_NAME="Full Scan"
 # ENS Update Task Name
 export ENS_UPDATE_TASK_NAME="Default Client Update task"
 
-# Function aid
-_get_task_line() {
-  local task="$1"
-  "$ENS_CLI" --listtasks \
-      | grep -Fxi -m1 "^[[:space:]]*\[.*] *${task} *"
-}
-
 # ENS Fullscan Index No. Get Command
-export ENS_FULLSCAN_INDEX_NO_CMD="${ENS_CLI} --listtasks | \
-  grep -Fxi -m1 \"^[[:space:]]*\\[.*] *${ENS_FULLSCAN_TASK_NAME} *\" \
-  | sed -n 's/^\\[\\([0-9]\\+)].*/\\1/p'"
+export ENS_FULLSCAN_INDEX_NO=$(
+  $ENS_CLI --listtasks | grep -F -m1 "${ENS_FULLSCAN_TASK_NAME}" \
+  | sed -n 's/^\[\([0-9]\+\)].*/\1/p'
+)
 
 # ENS Update Index No. Get Command
-export ENS_UPDATE_INDEX_NO_CMD="${ENS_CLI} --listtasks | \
-  grep -Fxi -m1 \"^[[:space:]]*\\[.*] *${ENS_UPDATE_TASK_NAME} *\" \
-  | sed -n 's/^\\[\\([0-9]\\+)].*/\\1/p'"
-
-# Get index
-_get_index() { eval "$1"; }
+export ENS_UPDATE_INDEX_NO=$(
+  $ENS_CLI --listtasks | grep -F -m1 "${ENS_UPDATE_TASK_NAME}" \
+  | sed -n 's/^\[\([0-9]\+\)].*/\1/p'
+)
 
 # ENS Fullscan Command
-export ENS_FULLSCAN_CMD="${ENS_CLI} --runtask --index $(_get_index "${ENS_FULLSCAN_INDEX_NO_CMD}")"
+export ENS_FULLSCAN_CMD="${ENS_CLI} --runtask  --index ${ENS_FULLSCAN_INDEX_NO}"
 
 # ENS Fullscan Cancel Command
-export ENS_FULLSCAN_CANCEL_CMD="${ENS_CLI} --stoptask --index $(_get_index "${ENS_FULLSCAN_INDEX_NO_CMD}")"
+export ENS_FULLSCAN_CANCEL_CMD="${ENS_CLI} --stoptask --index ${ENS_FULLSCAN_INDEX_NO}"
 
 # ENS Update Command
-export ENS_UPDATE_CMD="${ENS_CLI} --runtask --index $(_get_index "${ENS_UPDATE_INDEX_NO_CMD}")"
+export ENS_UPDATE_CMD="${ENS_CLI} --runtask  --index ${ENS_UPDATE_INDEX_NO}"
 
 # ENS Fullscan Status Command
-export ENS_FULLSCAN_STATUS_CMD="${ENS_CLI} --listtasks | \
-  _get_task_line \"${ENS_FULLSCAN_TASK_NAME}\" | awk '{print \$(NF-1)}'"
+export ENS_FULLSCAN_STATUS_CMD="${ENS_CLI} --listtasks | grep -F -m1 \"${ENS_FULLSCAN_TASK_NAME}\" | awk '{print \$(NF-1)}'"
 
 # ENS Update Status Command
-export ENS_UPDATE_STATUS_CMD="${ENS_CLI} --listtasks | \
-  _get_task_line \"${ENS_UPDATE_TASK_NAME}\" | awk '{print \$(NF-1)}'"
+export ENS_UPDATE_STATUS_CMD="${ENS_CLI} --listtasks | grep -F -m1 \"${ENS_UPDATE_TASK_NAME}\" | awk '{print \$(NF-1)}'"
 
 #----------------------------------------------------------
 # Script Processing related
